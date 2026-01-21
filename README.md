@@ -8,7 +8,7 @@ This project implements a complete IIoT (Industrial IoT) gateway on the BeagleBo
 
 # Quick Links
 
-➡️ [Project Overview Wiki Page](https://github.com/Imel23/Industrial-Edge-Gateway-Resilient-Alert-System/wiki/Industrial-Edge-Gateway-&-Resilient-Alert-System#hardware-platform)
+➡️ [Project Overview Wiki Page](https://github.com/Imel23/Industrial-Edge-Gateway-Resilient-Alert-System/wiki/Project-Overview-%E2%80%90-Industrial-Edge-Gateway-&-Resilient-Alert-System)
 
 ➡️ [Project Schedule & Kanban Board](https://github.com/Imel23/Industrial-Edge-Gateway-Resilient-Alert-System/wiki/Schedule)
 

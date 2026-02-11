@@ -207,7 +207,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 **Imel23**
 
 - GitHub: [@Imel23](https://github.com/Imel23)
-- Organization: Laboratory of Systems & Applications of Information & Energy Technologies
 
 ## 🙏 Acknowledgments
 

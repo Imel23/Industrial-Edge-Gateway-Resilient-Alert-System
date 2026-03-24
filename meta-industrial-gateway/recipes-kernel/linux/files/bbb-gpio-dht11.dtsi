@@ -29,15 +29,10 @@
 
 / {
 	project_leds {
-		compatible = "gpio-leds";
+		compatible = "industrial,led-gpio";
 		pinctrl-names = "default";
 		pinctrl-0 = <&project_led_pin>;
-
-		my_led {
-			label = "my_project:green:usr";
-			gpios = <&gpio0 23 GPIO_ACTIVE_HIGH>;
-			default-state = "off";
-		};
+		gpios = <&gpio0 23 GPIO_ACTIVE_HIGH>;
 	};
 
 	project_buttons {

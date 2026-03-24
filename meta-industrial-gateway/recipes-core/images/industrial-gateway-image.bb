@@ -6,6 +6,7 @@ inherit core-image
 
 IMAGE_INSTALL:append = " \
     kernel-modules \
+    industrial-led-mod \
 "
 
 # Set a root password (change for production!)

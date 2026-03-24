@@ -1,0 +1,32 @@
+From: Industrial Gateway Project <noreply@example.com>
+Subject: [PATCH] iio: humidity: dht11: support DHT11 sensors with decimal temperature
+
+Some DHT11 sensors report temperature with decimal precision (e.g. 28.5C
+instead of 28C). The current driver only accepts DHT11 data where both
+hum_dec and temp_dec are zero, causing "Don't know how to decode data"
+errors for these sensors.
+
+Add a third decoding path for DHT11 sensors that have hum_dec == 0 but
+temp_dec != 0, interpreting temp_dec as tenths of a degree.
+
+Upstream-Status: Pending
+Signed-off-by: Industrial Gateway Project <noreply@example.com>
+---
+ drivers/iio/humidity/dht11.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+--- a/drivers/iio/humidity/dht11.c
++++ b/drivers/iio/humidity/dht11.c
+@@ -152,7 +152,11 @@ static int dht11_decode(struct dht11 *dht11, int offset)
+ 		dht11->temperature = (((temp_int & 0x7f) << 8) + temp_dec) *
+ 					((temp_int & 0x80) ? -100 : 100);
+ 		dht11->humidity = ((hum_int << 8) + hum_dec) * 100;
+-	} else if (temp_dec == 0 && hum_dec == 0) {  /* DHT11 */
++	} else if (hum_dec == 0) {  /* DHT11 (with or without decimal temp) */
++		dht11->temperature = temp_int * 1000 + temp_dec * 100;
++		dht11->humidity = hum_int * 1000;
++	} else if (temp_dec == 0) {  /* DHT11 with decimal humidity only */
++		/* Unlikely, but handle symmetrically */
+ 		dht11->temperature = temp_int * 1000;
+ 		dht11->humidity = hum_int * 1000;
+ 	} else {

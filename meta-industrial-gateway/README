@@ -1,41 +1,25 @@
-This README file contains information on the contents of the meta-industrial-gateway layer.
+meta-industrial-gateway
+=======================
 
-Please see the corresponding sections below for details.
+Yocto BSP layer for the Industrial Edge Gateway Resilient Alert System
+on BeagleBone Black (am335x).
+
+Features
+--------
+  - Device tree configuration for DHT11 sensor, GPIO LED, and GPIO button
+  - Kernel config fragment enabling GPIO-LEDs, GPIO-keys, IIO, and DHT11
+  - Kernel patch for DHT11 sensors reporting decimal temperature values
 
 Dependencies
-============
+------------
+  URI: https://git.yoctoproject.org/poky
+  layers: meta, meta-poky, meta-yocto-bsp
+  branch: scarthgap
 
-  URI: <first dependency>
-  branch: <branch name>
+Adding the layer to your build
+------------------------------
+  bitbake-layers add-layer meta-industrial-gateway
 
-  URI: <second dependency>
-  branch: <branch name>
-
-  .
-  .
-  .
-
-Patches
-=======
-
-Please submit any patches against the meta-industrial-gateway layer to the xxxx mailing list (xxxx@zzzz.org)
-and cc: the maintainer:
-
-Maintainer: XXX YYYYYY <xxx.yyyyyy@zzzzz.com>
-
-Table of Contents
-=================
-
-  I. Adding the meta-industrial-gateway layer to your build
- II. Misc
-
-
-I. Adding the meta-industrial-gateway layer to your build
-=================================================
-
-Run 'bitbake-layers add-layer meta-industrial-gateway'
-
-II. Misc
-========
-
---- replace with specific information about the meta-industrial-gateway layer ---
+Building the image
+------------------
+  bitbake industrial-gateway-image

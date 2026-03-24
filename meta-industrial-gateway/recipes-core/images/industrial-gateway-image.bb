@@ -1,14 +1,12 @@
-SUMMARY = "Industrial Gateway OS Image"
+SUMMARY = "Industrial Edge Gateway Image"
+DESCRIPTION = "A minimal image for the Industrial Edge Gateway with resilient alert system support."
 LICENSE = "MIT"
+
 inherit core-image
 
 IMAGE_INSTALL:append = " \
-    packagegroup-core-boot \
-    packagegroup-core-ssh-openssh \
     kernel-modules \
-    i2c-tools \
-    gpio-utils \
-    libstdc++ \
 "
-# Allows root login without password for development
+
+# Set a root password (change for production!)
 EXTRA_IMAGE_FEATURES += "debug-tweaks"

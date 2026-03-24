@@ -1,0 +1,61 @@
+/*
+ * Device tree include for DHT11, LED, and Button on BeagleBone Black
+ *
+ * Pin mapping:
+ *   P8_13 (gpio0_23) -> LED output
+ *   P8_14 (gpio0_26) -> Button input
+ *   P8_11 (gpio1_13) -> DHT11 data
+ */
+
+&am33xx_pinmux {
+	project_led_pin: project-led-pin {
+		pinctrl-single,pins = <
+			AM33XX_PADCONF(AM335X_PIN_GPMC_AD9, PIN_OUTPUT_PULLDOWN, MUX_MODE7)	/* P8_13 gpmc_ad9.gpio0_23 */
+		>;
+	};
+
+	project_button_pin: project-button-pin {
+		pinctrl-single,pins = <
+			AM33XX_PADCONF(AM335X_PIN_GPMC_AD10, PIN_INPUT_PULLUP, MUX_MODE7)	/* P8_14 gpmc_ad10.gpio0_26 */
+		>;
+	};
+
+	project_dht11_pin: project-dht11-pin {
+		pinctrl-single,pins = <
+			AM33XX_PADCONF(AM335X_PIN_GPMC_AD13, PIN_INPUT_PULLUP, MUX_MODE7)	/* P8_11 gpmc_ad13.gpio1_13 */
+		>;
+	};
+};
+
+/ {
+	project_leds {
+		compatible = "gpio-leds";
+		pinctrl-names = "default";
+		pinctrl-0 = <&project_led_pin>;
+
+		my_led {
+			label = "my_project:green:usr";
+			gpios = <&gpio0 23 GPIO_ACTIVE_HIGH>;
+			default-state = "off";
+		};
+	};
+
+	project_buttons {
+		compatible = "gpio-keys";
+		pinctrl-names = "default";
+		pinctrl-0 = <&project_button_pin>;
+
+		my_button {
+			label = "My User Button";
+			linux,code = <0x100>;
+			gpios = <&gpio0 26 GPIO_ACTIVE_LOW>;
+		};
+	};
+
+	dht11_sensor {
+		compatible = "dht11";
+		pinctrl-names = "default";
+		pinctrl-0 = <&project_dht11_pin>;
+		gpios = <&gpio1 13 0>;
+	};
+};

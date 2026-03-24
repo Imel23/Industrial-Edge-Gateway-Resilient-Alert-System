@@ -2,6 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Issues](https://img.shields.io/github/issues/Imel23/Industrial-Edge-Gateway-Resilient-Alert-System)](https://github.com/Imel23/Industrial-Edge-Gateway-Resilient-Alert-System/issues)
+[![Build and Test](https://github.com/Imel23/Industrial-Edge-Gateway-Resilient-Alert-System/actions/workflows/build.yml/badge.svg)](https://github.com/Imel23/Industrial-Edge-Gateway-Resilient-Alert-System/actions/workflows/build.yml)
 
 This repository contains the final project for the Advanced Embedded Linux Development course.
 

@@ -1,0 +1,32 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-daemon:
+    name: Build Daemon with Yocto SDK Toolchain
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build Docker SDK Container
+      run: docker build -t yocto-sdk-env -f .github/docker/Dockerfile .
+
+    - name: Compile C++ Daemon
+      run: |
+        docker run --rm -v ${{ github.workspace }}:/app yocto-sdk-env bash -c "cd src/daemon && make"
+
+    - name: Verify Compiled Output
+      run: |
+        file src/daemon/daemon
+        # Ensure it is compiled for ARM as expected by the BeagleBone Black
+        file src/daemon/daemon | grep "ARM"

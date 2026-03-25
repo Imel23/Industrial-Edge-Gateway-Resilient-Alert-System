@@ -36,15 +36,12 @@
 	};
 
 	project_buttons {
-		compatible = "gpio-keys";
+		compatible = "industrial,button-gpio";
 		pinctrl-names = "default";
 		pinctrl-0 = <&project_button_pin>;
-
-		my_button {
-			label = "My User Button";
-			linux,code = <0x100>;
-			gpios = <&gpio0 26 GPIO_ACTIVE_LOW>;
-		};
+		gpios = <&gpio0 26 GPIO_ACTIVE_LOW>;
+		interrupt-parent = <&gpio0>;
+		interrupts = <26 IRQ_TYPE_EDGE_BOTH>;
 	};
 
 	dht11_sensor {

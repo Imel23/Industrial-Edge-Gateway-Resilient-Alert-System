@@ -45,7 +45,7 @@
 	};
 
 	dht11_sensor {
-		compatible = "dht11";
+		compatible = "industrial,dht11-iio";
 		pinctrl-names = "default";
 		pinctrl-0 = <&project_dht11_pin>;
 		gpios = <&gpio1 13 0>;

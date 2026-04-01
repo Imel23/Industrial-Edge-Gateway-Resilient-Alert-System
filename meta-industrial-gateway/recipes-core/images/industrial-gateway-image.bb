@@ -8,6 +8,7 @@ IMAGE_INSTALL:append = " \
     kernel-modules \
     industrial-led-mod \
     industrial-button-mod \
+    industrial-dht11-mod \
 "
 
 # Set a root password (change for production!)

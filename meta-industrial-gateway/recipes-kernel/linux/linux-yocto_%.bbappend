@@ -1,8 +1,7 @@
 FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 
 SRC_URI += "file://bbb-gpio-dht11.dtsi \
-            file://gpio-features.cfg \
-            file://0001-iio-humidity-dht11-support-decimal-temperature.patch"
+            file://gpio-features.cfg"
 
 do_configure:append() {
     # Copy our dtsi into the kernel device-tree source directory

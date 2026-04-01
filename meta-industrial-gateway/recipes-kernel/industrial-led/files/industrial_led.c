@@ -302,9 +302,14 @@ static int led_probe(struct platform_device *pdev)
 	}
 
 	/* ---- hrtimer init (does NOT start it yet) ---- */
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 12, 0)
+	hrtimer_setup(&led_data->blink_timer, led_blink_timer_cb,
+		      CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+#else
 	hrtimer_init(&led_data->blink_timer, CLOCK_MONOTONIC,
 		     HRTIMER_MODE_REL);
 	led_data->blink_timer.function = led_blink_timer_cb;
+#endif
 	led_data->blinking = false;
 	led_data->blink_freq_hz = 0;
 	led_data->led_state = false;
@@ -366,7 +371,11 @@ unregister_chrdev:
 	return ret;
 }
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 11, 0)
+static void led_remove(struct platform_device *pdev)
+#else
 static int led_remove(struct platform_device *pdev)
+#endif
 {
 	struct industrial_led_data *led_data = platform_get_drvdata(pdev);
 	unsigned long flags;
@@ -395,7 +404,9 @@ static int led_remove(struct platform_device *pdev)
 	unregister_chrdev_region(led_data->dev_num, 1);
 
 	pr_info("%s: Driver removed successfully\n", DRIVER_NAME);
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 11, 0)
 	return 0;
+#endif
 }
 
 static const struct of_device_id led_of_match[] = {

@@ -575,11 +575,18 @@ static int dht11_probe(struct platform_device *pdev)
  *
  * Return: 0 always.
  */
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 11, 0)
+static void dht11_remove(struct platform_device *pdev)
+{
+	dev_info(&pdev->dev, "%s: Driver removed\n", DRIVER_NAME);
+}
+#else
 static int dht11_remove(struct platform_device *pdev)
 {
 	dev_info(&pdev->dev, "%s: Driver removed\n", DRIVER_NAME);
 	return 0;
 }
+#endif
 
 /* ------------------------------------------------------------------ */
 /*  Device Tree matching                                               */

@@ -7,10 +7,13 @@ on:
     branches: [ "main" ]
 
 jobs:
+  # ──────────────────────────────────────────────────────────
+  #  Job 1: Build C++ Daemon (ARM cross-compilation)
+  # ──────────────────────────────────────────────────────────
   build-daemon:
-    name: Build Daemon with Yocto SDK Toolchain
+    name: Build C++ Daemon
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -30,3 +33,102 @@ jobs:
         file src/daemon/daemon
         # Ensure it is compiled for ARM as expected by the BeagleBone Black
         file src/daemon/daemon | grep "ARM"
+
+  # ──────────────────────────────────────────────────────────
+  #  Job 2: Build Kernel Modules (LED, Button, DHT11)
+  # ──────────────────────────────────────────────────────────
+  build-kernel-modules:
+    name: Build Kernel Modules
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: true
+      matrix:
+        module:
+          - name: industrial-led
+            source: meta-industrial-gateway/recipes-kernel/industrial-led/files
+          - name: industrial-button
+            source: meta-industrial-gateway/recipes-kernel/industrial-button/files
+          - name: industrial-dht11
+            source: meta-industrial-gateway/recipes-kernel/industrial-dht11/files
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Install kernel headers
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y --no-install-recommends \
+          linux-headers-$(uname -r) \
+          build-essential
+
+    - name: Compile ${{ matrix.module.name }}
+      run: |
+        echo "══════════════════════════════════════════════════"
+        echo "  Building: ${{ matrix.module.name }}"
+        echo "  Source:   ${{ matrix.module.source }}"
+        echo "  Kernel:   $(uname -r)"
+        echo "══════════════════════════════════════════════════"
+        cd ${{ matrix.module.source }}
+        make KERNEL_SRC=/lib/modules/$(uname -r)/build 2>&1
+        echo ""
+        echo "✅ ${{ matrix.module.name }} compiled successfully"
+
+    - name: Verify module output
+      run: |
+        # Find the .ko file and verify it's a valid kernel module
+        KO_FILE=$(find ${{ matrix.module.source }} -name "*.ko" | head -1)
+        if [ -z "$KO_FILE" ]; then
+          echo "❌ ERROR: No .ko file produced for ${{ matrix.module.name }}"
+          exit 1
+        fi
+        echo "✅ Module file: $KO_FILE"
+        file "$KO_FILE"
+        modinfo "$KO_FILE"
+
+  # ──────────────────────────────────────────────────────────
+  #  Job 3: Build React Dashboard
+  # ──────────────────────────────────────────────────────────
+  build-react-ui:
+    name: Build React Dashboard
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: src/ui
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+        cache: 'npm'
+        cache-dependency-path: src/ui/package-lock.json
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Lint
+      run: npm run lint
+
+    - name: Build production bundle
+      run: |
+        npm run build 2>&1
+        echo ""
+        echo "✅ React dashboard built successfully"
+
+    - name: Verify build output
+      run: |
+        if [ ! -d "dist" ]; then
+          echo "❌ ERROR: dist/ directory not found"
+          exit 1
+        fi
+        echo "📦 Build output:"
+        du -sh dist/
+        echo ""
+        echo "📂 Files:"
+        find dist -type f | head -20
